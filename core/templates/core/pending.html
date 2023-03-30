@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Pending{% endblock title %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'core:index' %}">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'core:index' %}">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" action="{% url 'core:search' %}" method="GET">
+          <input class="form-control me-2" name="q" type="type" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+      {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Personal
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Trang cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:pending' %}">Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:cart' %}">Cart ({{count}})</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:login' %}">Login</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:register' %}">Signup</a>
+          </li>
+    </ul>
+    {% endif %}
+    </div>
+  </nav>
+{% endblock header %}
+
+
+{% block pending %}
+<div class="container mt-5">
+    
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col" style="flex:2">Description Product</th>
+            <th scope="col" style="flex:2">Name + Mobile + Address</th>
+            <th scope="col" style="flex:1">Quantity</th>
+            <th scope="col" style="flex:1">Total</th>
+            <th scope="col" style="flex:1">Approved</th>
+            <th scope="col" style="flex:1">Received</th>
+            <th scope="col" style="flex:1">Order date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in shippings %}
+          <tr>
+            <td style="flex:1">{{item.description}}</td>
+            <td style="flex:2">{{item.name}} - {{item.mobile}} {{item.adderss}}</td>
+            <td style="flex:1">{{item.total_items}}</td>
+            <td style="flex:1">${{item.total}}</td>
+            <td style="flex:1">{{item.approved}}</td>
+            <td style="flex:1">
+                {% if item.approved == "CO" %}
+                  <form action="" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="id" value="{{item.id}}">đã nhận hàng</button>
+                  </form>
+                {% endif %}
+            </td>
+            <td style="flex:1">{{item.date_added|date:"d-m-Y"}}</td>
+          </tr> 
+         
+        </tbody>
+        {% endfor %}
+      </table>
+
+  </div>
+{% endblock pending %}

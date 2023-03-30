@@ -1,0 +1,111 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'core:index' %}">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'core:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" action="{% url 'core:search' %}" method="GET">
+          <input class="form-control me-2" name="q" type="type" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+          {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Personal
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Trang cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:pending' %}">Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:cart' %}">Cart ({{count}})</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:login' %}">Login</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:register' %}">Signup</a>
+          </li>
+    </ul>
+    {% endif %}
+    </div>
+  </nav>
+{% endblock header %}
+
+{% block slide %}
+<div class="container mt-3" >
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{% static 'core/images/banner/b2.jpg' %}" class="d-block w-100" alt="">
+          </div>
+          <div class="carousel-item">
+            <img src="{% static 'core/images/banner/b4.jpg' %}" class="d-block w-100" alt="">
+          </div>
+          <div class="carousel-item">
+            <img src="{% static 'core/images/banner/b3.jpg' %}" class="d-block w-100" alt="">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+</div>
+{% endblock slide %}
+
+
+{% block category %}
+<div class="container mt-5" >
+    <h1 class="text-center mb-4 ">Category Product</h1>
+    <div class="row">
+      {% for category in categorys %}
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card h-100">
+          <img src="{{category.ImageURL}}" class="card-img-top" alt="">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{category.title}}</h5>
+            <a href="{% url 'core:viewcategory' slug=category.slug %}" class="btn btn-primary">View</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+{% endblock category %}
+
+
+
+

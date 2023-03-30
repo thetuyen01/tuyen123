@@ -1,0 +1,128 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Cart{% endblock title %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'core:index' %}">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'core:index' %}">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" action="{% url 'core:search' %}" method="GET">
+          <input class="form-control me-2" name="q" type="type" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+      {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Personal
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Trang cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:pending' %}">Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:cart' %}">Cart ({{count}})</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:login' %}">Login</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:register' %}">Signup</a>
+          </li>
+    </ul>
+    {% endif %}
+    </div>
+  </nav>
+{% endblock header %}
+
+{% block cart %}
+
+<div class="container mt-5">
+    <h1 class="mb-5">Cart</h1>
+    <div class="row">
+      <div class="col-md-8">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" style="flex:1">Image</th>
+              <th scope="col" style="flex:1">Product</th>
+              <th scope="col" style="flex:1">Price</th>
+              <th scope="col" style="flex:1">Quantity</th>
+              <th scope="col" style="flex:1">Total</th>
+              <th scope="col" style="flex:1">Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in orderitems %}
+            <tr>
+              <td style="flex:1">
+                <div style="width:50px">
+                  <img src={{i.product.ImageURL}} style="width:80%"/>
+                </div>
+              </td>
+              <td style="flex:1">{{i.product.name}}</td>
+              <td style="flex:1">${{i.product.price}}</td>
+              <td style="flex:1" >{{i.quantity}}</td>
+              <td style="flex:1">${{i.total_price}}</td>
+              <td style="flex:1">
+                <button type="button" class="btn btn-primary btn-sm mb-2">
+                  <a href="{% url 'core:edit' i.id %}" style="text-decoration: none;color:#fff;">Fix</a>
+                  </button>
+                  <form action="" method="post" >
+                    {% csrf_token %}
+                    <button type="submit" name='id' value="{{i.id}}" class="btn btn-danger btn-sm">
+                      Delete
+                    </button>
+                  </form>
+              </td>
+            </tr> 
+            {% endfor %}
+          </tbody>
+          
+        </table>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">Summary</div>
+          <div class="card-body">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Total</td>
+                  <td>${{cart.total_items_price}}</td>
+                </tr>
+                <tr>
+                    <td>Item</td>
+                    <td>{{cart.total_item}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+              {% if orderitems %}
+              <button type="button" class="btn btn-success">
+                <a href="{% url 'core:checkout' %}" style="text-decoration: none;color:green;color:#fff">Checkout</a>
+              </button>
+              {% endif %}
+            </div>
+{% endblock cart %}
+

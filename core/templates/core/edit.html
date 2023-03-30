@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Edit{% endblock title %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'core:index' %}">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'core:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% for category in categorys %}
+              <li><a class="dropdown-item" href="">{{category.title}}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              {% endfor %}
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" action="{% url 'core:search' %}" method="GET">
+          <input class="form-control me-2" name="q" type="type" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+      {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Personal
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Trang cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:pending' %}">Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:cart' %}">Cart (0)</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:login' %}">Login</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:register' %}">Signup</a>
+          </li>
+    </ul>
+    {% endif %}
+    </div>
+  </nav>
+{% endblock header %}
+
+{% block productone %}
+
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-6">
+        <img src="{{oderitem.product.ImageURL}}" alt="Product Image" class="img-fluid">
+      </div>
+      <div class="col-lg-6">
+        <h2>{{oderitem.product.name}}</h2>
+        <p>Lorem ipsum dsagittis justo congue non. Fusce condimentum ipsum ac lectus dapibus, vel bibendum elit convallis.</p>
+        <h3>{{oderitem.product.price}} VND</h3>
+        <p>đã bán : {{oderitem.product.hasbeensell}}</p>
+        <form method="post" action="">
+          {% csrf_token %}
+        <div class="buttons_added m-3">
+            Số lượng: <input aria-label="quantity" class="input-qty" max="1000" min="1" name="quantity" type="number" value="1">
+        </div>
+        <button class="btn btn-primary" name="id" value="{{oderitem.id}}">Add to Cart</button>
+      </form>
+      </div>
+    </div>
+</div>
+{% endblock productone %}

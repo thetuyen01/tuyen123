@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock title %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'core:index' %}">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'core:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" action="{% url 'core:search' %}" method="GET">
+          <input class="form-control me-2" name="q" type="type" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+      {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Personal
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Trang cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:pending' %}">Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:cart' %}">Cart ({{count}})</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:login' %}">Login</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:register' %}">Signup</a>
+          </li>
+    </ul>
+    {% endif %}
+    </div>
+  </nav>
+{% endblock header %}
+
+{% block trangcanhan %}
+<section class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Thông tin cá nhân</h2>
+          <p>Họ và tên: {{customer.name}}</p>
+          <p>Email: {{user.email}}</p>
+          <p>Số điện thoại: {{customer.number_phone}}</p>
+          <p>Địa chỉ: {{customer.address}}</p>
+          <div><button class="btn-primary"><a href="{% url 'core:updateprofile' %}" style="color:#fff;text-decoration: none">Cập nhật tài khoảng</a></button></div>
+          <div><button class="btn-warning mt-2"><a href="{% url 'account:doimatkhau' %}" style="color:#fff;text-decoration: none">Đổi mật khẩu</a></button></div>
+        </div>
+        <div class="col-md-6">
+          <h2>Lịch sử mua hàng</h2>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Các sản phẩm đã mua + Tiền</th>
+                <th scope="col">Tổng sản phẩm</th>
+                <th scope="col">Thành tiền</th>
+                <th scope="col">Ngày mua</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for purch in purchs %}
+              <tr>
+                <td>{{purch.description}}</td>
+                <td>{{purch.total_items}}</td>
+                <td>${{purch.total}}</td>
+                <td>{{purch.date_added|date:"d-m-Y"}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+{% endblock trangcanhan %}
+
+

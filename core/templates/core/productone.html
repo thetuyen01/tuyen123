@@ -1,0 +1,116 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Product{% endblock title %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'core:index' %}">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'core:index' %}">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" action="{% url 'core:search' %}" method="GET">
+          <input class="form-control me-2" name="q" type="type" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+      {% if user.is_authenticated %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Personal
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Trang cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:pending' %}">Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:cart' %}">Cart ({{count}})</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:login' %}">Login</a>
+          </li>
+          <li li class="nav-item">
+            <a class="nav-link" href="{% url 'account:register' %}">Signup</a>
+          </li>
+    </ul>
+    {% endif %}
+    </div>
+  </nav>
+{% endblock header %}
+
+{% block productone %}
+
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-6">
+        <img src="{{product.ImageURL}}" alt="Product Image" class="img-fluid">
+      </div>
+      <div class="col-lg-6">
+        <h2>{{product.name}}</h2>
+        <p>Lorem ipsum dsagittis justo congue non. Fusce condimentum ipsum ac lectus dapibus, vel bibendum elit convallis.</p>
+        <h3>{{product.price}} VND</h3>
+        <p>đã bán : {{product.hasbeensell}}</p>
+        <p>Đánh giá : {{product.evaluate}} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+          <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+        </svg></p>
+        <form method="post" action="{% url 'core:addorderitem' %}">
+          {% csrf_token %}
+        <div class="buttons_added m-3">
+            Số lượng: <input aria-label="quantity" class="input-qty" max="1000" min="1" name="quantity" type="number" value="1">
+        </div>
+        <button class="btn btn-primary" name="id" value="{{product.id}}">Add to Cart</button>
+      </form>
+      </div>
+    </div>
+</div>
+{% endblock productone %}
+
+{% block comment %}
+<div class=" m-5">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <h4 class="text-center mb-4">Product Review</h4>
+      <form action="{% url 'core:commet' %}" method="post" class="mt-2">
+        {% csrf_token %}
+        <div class="form-group mb-2">
+          Evaluate : <input aria-label="quantity" class="input-qty" max="5" min="0" name="number" type="number" value="0"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+          </svg>
+        </div>
+        <div class="form-group">
+          <label for="comment">Your Comment</label>
+          <textarea class="form-control mb-2" id="comment" name="bl" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" name="id" value="{{product.id}}">Submit</button>
+    </form>
+      {% for cm in comt %}
+      <div class="m-5">
+        <div>User : {{cm.user.username}}</div>
+        <div class="mt-3 mb-3">Evaluate :  {{cm.star}} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+          <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+        </svg> </div>
+        <div>Comment: {{cm.comment}} </div>
+        <div>{{cm.created_at}} </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock comment %}
